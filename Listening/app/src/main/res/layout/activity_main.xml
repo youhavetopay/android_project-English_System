@@ -44,8 +44,8 @@
         <LinearLayout
             android:layout_width="363dp"
             android:layout_height="226dp"
+            android:background="@drawable/border_radius"
             android:layout_centerInParent="true"
-            android:background="#FFF"
             android:orientation="vertical">
 
             <!--  문제   -->
@@ -60,6 +60,8 @@
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
+
+            <!--  듣기평가 소리버튼  -->
             <ImageView
                 android:id="@+id/Listening_evaluation_Button"
                 android:layout_width="102dp"
@@ -67,9 +69,7 @@
                 android:layout_gravity="center"
                 app:srcCompat="@drawable/music_and_multimedia" />
 
-            <!--  듣기평가 소리버튼  --><![CDATA[
-            />
-        ]]>
+
         </LinearLayout>
     </RelativeLayout>
 
@@ -85,15 +85,19 @@
         <EditText
             android:id="@+id/Answer_input"
             android:layout_width="360dp"
-            android:layout_height="wrap_content"
+            android:layout_height="37dp"
             android:layout_marginLeft="20dp"
-            android:inputType="text" />
+            android:background="@drawable/border_radius"
+            android:hint="   답을 입력하세요."
+            android:inputType="text"
+            android:textColorHint="#878181" />
 
         <Button
             android:id="@+id/submit_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
+            android:layout_marginTop="5dp"
             android:layout_marginRight="20dp"
             android:text="제출"
             android:textColor="#000000"
@@ -103,6 +107,8 @@
     </LinearLayout>
 
 
+
+  <!-- 뒤로가기 버튼 레이아웃  -->
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
