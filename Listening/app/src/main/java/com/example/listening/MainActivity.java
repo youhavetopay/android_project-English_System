@@ -99,7 +99,9 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
-
+/**
+ * 아이즈원!!
+ * **/
 
     /**
      * 툴바에 있는 뒤로가기 버튼 눌렀을 때
