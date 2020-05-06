@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Listening</string>
+    <string name="sound_toast">Izone!! sound</string>
+    <string name="sound_problem">소리를 듣고 올바른 \n답을 입력하세요.</string>
+</resources>
