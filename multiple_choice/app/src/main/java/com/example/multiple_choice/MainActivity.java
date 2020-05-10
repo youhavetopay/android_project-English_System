@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,7 +34,8 @@ public class MainActivity extends AppCompatActivity {
             create_text_view("아이즈원"+ (i+1), i);
         }
 
-
+        ImageView multiple_back = new ImageView(this);
+        multiple_back.setImageResource(R.drawable.ic_menu_revert);
 
     }
 
@@ -54,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
         LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
-        p.gravity = Gravity.CENTER;
+        //p.gravity = Gravity.CENTER;
         p.setMargins(50, 0 ,50, 20);
         view.setLayoutParams(p);
 
@@ -90,4 +92,16 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     };
+    /**
+     * 툴바에 있는 뒤로가기 버튼 눌렀을 때
+     * **/
+
+    @Override
+    public void onBackPressed(){
+        Toast.makeText(
+                this,
+                "뒤로가기 버튼을 눌러 \n결과를 저장하지 않고 돌아갑니다.",
+                Toast.LENGTH_SHORT).show();
+        super.onBackPressed();
+    }
 }
