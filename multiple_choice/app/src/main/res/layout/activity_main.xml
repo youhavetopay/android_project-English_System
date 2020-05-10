@@ -75,9 +75,9 @@
     </RelativeLayout>
 
     <LinearLayout
+        android:id="@+id/parent_option"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:id="@+id/parent_option"/>
+        android:layout_height="389dp"
+        android:orientation="vertical" />
 
 </LinearLayout>

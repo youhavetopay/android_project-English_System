@@ -1,11 +1,14 @@
 package com.example.multiple_choice;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Layout;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +21,6 @@ public class MainActivity extends AppCompatActivity {
 
     private static final float FONT_SIZE = 20;   // 선택지 TextView 때문에
     private LinearLayout parent_option;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,13 +32,67 @@ public class MainActivity extends AppCompatActivity {
 
 
         parent_option = (LinearLayout) findViewById(R.id.parent_option);
+        LinearLayout.LayoutParams parent_layout = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT);
+        parent_option.setLayoutParams(parent_layout);
+
+
         for(int i = 0;i<4;i++){ // 여기서 생성되는 갯수 조정 밎 단어 조정
             create_text_view("아이즈원"+ (i+1), i);
         }
 
-        ImageView multiple_back = new ImageView(this);
-        multiple_back.setImageResource(R.drawable.ic_menu_revert);
 
+        /**
+         * 뒤로가기 버튼 생성
+         * 객관식 답을 자바로 생성해서 xml에 추가하면 이상하게 나와서
+         * 이렇게 생성함
+         * **/
+        ImageView multiple_back = new ImageView(this);
+        multiple_back.setImageResource(R.drawable.arrows);
+        LinearLayout.LayoutParams back_image = new LinearLayout.LayoutParams(150,180);
+        back_image.gravity = Gravity.BOTTOM;  // 왜 아래로 정렬이 안될까??
+        multiple_back.setLayoutParams(back_image);
+        parent_option.addView(multiple_back);
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        /*
+         * 다이얼로그 설정 (취소,확인 있는 알림창)
+         * 뒤로가기 눌렀을 때 바로가면 좀 그러니 한번 물어보는 용도
+         * */
+        builder.setTitle("뒤로가기")
+                .setMessage("문제 풀기를 포기하실겁니까? \n포기시 결과는 저장되지 않고 이전페이지로 돌아갑니다.")
+                .setCancelable(false)
+
+                .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Toast.makeText(
+                                getApplicationContext(),
+                                "뒤로가기",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                })
+
+                .setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Toast.makeText(
+                                getApplicationContext(),
+                                "문제 계속 푼다.",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+        // 뒤로가기 이미지 누르면 다이얼로그생성
+        multiple_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog dialog = builder.create();
+                dialog.show();
+            }
+        });
     }
 
     /**

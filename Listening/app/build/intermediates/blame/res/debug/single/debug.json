@@ -66,5 +66,9 @@
     {
         "merged": "D:\\android_project-English_System\\Listening\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-anydpi-v26_ic_launcher.xml.flat",
         "source": "D:\\android_project-English_System\\Listening\\app\\src\\main\\res\\mipmap-anydpi-v26\\ic_launcher.xml"
+    },
+    {
+        "merged": "D:\\android_project-English_System\\Listening\\app\\build\\intermediates\\res\\merged\\debug\\drawable-v24_arrows.png.flat",
+        "source": "D:\\android_project-English_System\\Listening\\app\\src\\main\\res\\drawable-v24\\arrows.png"
     }
 ]
