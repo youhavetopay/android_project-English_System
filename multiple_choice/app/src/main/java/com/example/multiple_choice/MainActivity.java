@@ -1,11 +1,16 @@
 package com.example.multiple_choice;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.database.Cursor;
+import android.database.SQLException;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Layout;
@@ -19,16 +24,34 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
+
     private static final float FONT_SIZE = 20;   // 선택지 TextView 때문에
     private LinearLayout parent_option;
+
+    private MySQLiteOpenHelper databaseHelper;
+    private SQLiteDatabase db;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        databaseHelper = new MySQLiteOpenHelper(this);
+        try {
+            db = databaseHelper.getReadableDatabase();   //읽기 모드
+        } catch (SQLException e) {
+            db = databaseHelper.getWritableDatabase();   // 쓰기 모드
+        }
+
+        //db.execSQL("insert into izone1 values(null,'" + "권은비" + "'," + "'" + "리더" + "');");
+        Toast.makeText(this, "추가되었습니다.", Toast.LENGTH_SHORT).show();
+
         // 영단어(문제) 출력해주는 곳
+        Cursor cursor = db.rawQuery("select * from izone1",null);
+        cursor.moveToFirst();
+        cursor.moveToNext();
         TextView problem = (TextView) findViewById(R.id.problem);
-        problem.setText(R.string.problem);
+        problem.setText(cursor.getString(1));
 
 
         parent_option = (LinearLayout) findViewById(R.id.parent_option);
@@ -160,4 +183,35 @@ public class MainActivity extends AppCompatActivity {
                 Toast.LENGTH_SHORT).show();
         super.onBackPressed();
     }
+
+
 }
+
+class MySQLiteOpenHelper extends SQLiteOpenHelper{
+    private static final String DATABASE_NAME = "word.db";
+    private static final int DATABASE_VERSION = 1;
+
+    public static final String DATABASE_TABLE_NAME = "word";
+
+    public MySQLiteOpenHelper(@Nullable Context context) {
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+    }
+
+    @Override
+    public void onCreate(SQLiteDatabase db) {
+        db.execSQL("create table izone1(" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                "name TEXT, " +
+                "age TEXT)");
+
+    }
+
+    @Override
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        db.execSQL("drop table if exists izone");
+        onCreate(db);
+
+    }
+}
+
+
