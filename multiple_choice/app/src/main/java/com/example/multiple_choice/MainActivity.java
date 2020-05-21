@@ -24,12 +24,17 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
-
     private static final float FONT_SIZE = 20;   // 선택지 TextView 때문에
     private LinearLayout parent_option;
 
     private MySQLiteOpenHelper databaseHelper;
     private SQLiteDatabase db;
+
+    int result[] = new int[4]; // 보기 커서 위치 용
+    int answer; // 정답커서 위치
+
+    int random;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,17 +46,29 @@ public class MainActivity extends AppCompatActivity {
             db = databaseHelper.getReadableDatabase();   //읽기 모드
         } catch (SQLException e) {
             db = databaseHelper.getWritableDatabase();   // 쓰기 모드
-        }
+    }
 
-        //db.execSQL("insert into izone1 values(null,'" + "권은비" + "'," + "'" + "리더" + "');");
+        /**
+        db.execSQL("insert into izone1 values(null,'" + "김채원" + "'," + "'" + "6" + "');");
+        db.execSQL("insert into izone1 values(null,'" + "김민주" + "'," + "'" + "7" + "');");
+        db.execSQL("insert into izone1 values(null,'" + "혼다히토미" + "'," + "'" + "8" + "');");
+        db.execSQL("insert into izone1 values(null,'" + "야부키나코" + "'," + "'" + "9" + "');");
+         db.execSQL("insert into izone1 values(null,'" + "조유리" + "'," + "'" + "10" + "');");
+         db.execSQL("insert into izone1 values(null,'" + "안유진" + "'," + "'" + "11" + "');");
+         db.execSQL("insert into izone1 values(null,'" + "장원영" + "'," + "'" + "12" + "');");
         Toast.makeText(this, "추가되었습니다.", Toast.LENGTH_SHORT).show();
+         **/
 
         // 영단어(문제) 출력해주는 곳
         Cursor cursor = db.rawQuery("select * from izone1",null);
         cursor.moveToFirst();
         cursor.moveToNext();
+        cursor.moveToNext();
+        cursor.moveToNext();
         TextView problem = (TextView) findViewById(R.id.problem);
         problem.setText(cursor.getString(1));
+        answer = cursor.getPosition();
+
 
 
         parent_option = (LinearLayout) findViewById(R.id.parent_option);
@@ -60,10 +77,21 @@ public class MainActivity extends AppCompatActivity {
                 ViewGroup.LayoutParams.MATCH_PARENT);
         parent_option.setLayoutParams(parent_layout);
 
+        /**
+        Cursor cu = db.rawQuery("select * from izone1",null);
+        cu.moveToFirst();
+        cu.moveToNext();
 
-        for(int i = 0;i<4;i++){ // 여기서 생성되는 갯수 조정 밎 단어 조정
-            create_text_view("아이즈원"+ (i+1), i);
-        }
+         **/
+        Cursor cu1 = db.rawQuery("select * from izone1",null);
+        Cursor cu2 = db.rawQuery("select * from izone1",null);
+        Cursor cu3 = db.rawQuery("select * from izone1",null);
+        Cursor cu4 = db.rawQuery("select * from izone1",null);
+        create_text_view("아이즈원"+ (1), 1, cu1);
+        create_text_view("아이즈원"+ (2), 2, cu2);
+        create_text_view("아이즈원"+ (3), 3, cu3);
+        create_text_view("아이즈원"+ (4), 4, cu4);
+
 
 
         /**
@@ -71,6 +99,7 @@ public class MainActivity extends AppCompatActivity {
          * 객관식 답을 자바로 생성해서 xml에 추가하면 이상하게 나와서
          * 이렇게 생성함
          * **/
+
         ImageView multiple_back = new ImageView(this);
         multiple_back.setImageResource(R.drawable.arrows);
         LinearLayout.LayoutParams back_image = new LinearLayout.LayoutParams(150,180);
@@ -109,6 +138,7 @@ public class MainActivity extends AppCompatActivity {
                 });
 
         // 뒤로가기 이미지 누르면 다이얼로그생성
+
         multiple_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -122,15 +152,19 @@ public class MainActivity extends AppCompatActivity {
      * 영어단어 작을 때도 유동적으로 하기 위해 그때 그때 TextView 생성
      *
      * **/
-    public void create_text_view(String a, int i){
+    public void create_text_view(String a, int i, Cursor cu){
+        cu.moveToPosition(i);
         TextView view = new TextView(this);
-        view.setText(a);
+        view.setText(cu.getString(1));
         view.setTextSize(FONT_SIZE);
         view.setTextColor(Color.BLACK);
         view.setBackgroundResource(R.drawable.border_radius);
         view.setGravity(Gravity.CENTER);
         view.setTag(i);                    // 여기까지 TextView 설정(글자색, 폰트크기 등등)
-        view.setOnClickListener(problem_text);    // 각각의 TextView의 클릭 이벤트 설정
+
+        view.setOnClickListener(problem_text);          // 각각의 TextView의 클릭 이벤트 설정
+
+        result[i-1] = cu.getPosition();
 
         LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
@@ -149,26 +183,48 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             int view_tag = (Integer)v.getTag();
-            switch (view_tag){
-                case 0:
-                    Toast.makeText(getApplicationContext(), "1번 답 고름", Toast.LENGTH_SHORT).show();
-                    break;
 
-                case 1:
-                    Toast.makeText(getApplicationContext(), "2번 답 고름", Toast.LENGTH_SHORT).show();
+            switch (view_tag){
+                    case 1:
+                        if (result[0] == answer){
+                        Toast.makeText(getApplicationContext(),"정답",Toast.LENGTH_SHORT).show();
+                    }
+                    else {
+                        Toast.makeText(getApplicationContext(),"틀림",Toast.LENGTH_SHORT).show();
+                    }
                     break;
 
                 case 2:
-                    Toast.makeText(getApplicationContext(), "3번 답 고름", Toast.LENGTH_SHORT).show();
+                    if (result[1] == answer){
+                        Toast.makeText(getApplicationContext(),"정답",Toast.LENGTH_SHORT).show();
+                    }
+                    else {
+                        Toast.makeText(getApplicationContext(),"틀림",Toast.LENGTH_SHORT).show();
+                    }
                     break;
 
                 case 3:
-                    Toast.makeText(getApplicationContext(), "4번 답 고름", Toast.LENGTH_SHORT).show();
+                    if (result[2] == answer){
+                        Toast.makeText(getApplicationContext(),"정답",Toast.LENGTH_SHORT).show();
+                    }
+                    else {
+                        Toast.makeText(getApplicationContext(),"틀림",Toast.LENGTH_SHORT).show();
+                    }
+                    break;
+
+                case 4:
+                    if (result[3] == answer){
+                        Toast.makeText(getApplicationContext(),"정답",Toast.LENGTH_SHORT).show();
+                    }
+                    else {
+                        Toast.makeText(getApplicationContext(),"틀림",Toast.LENGTH_SHORT).show();
+                    }
                     break;
 
                 default:
                     // 아무일도 안 일어남
             }
+
         }
     };
     /**
