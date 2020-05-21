@@ -37,6 +37,9 @@ public class MainActivity extends AppCompatActivity {
     int result_arr_length;
     int count =0;
 
+    int number_of_correct_answers = 0;
+    int wrong_count = 0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,10 +65,10 @@ public class MainActivity extends AppCompatActivity {
          **/
 
         // 영단어(문제) 출력해주는 곳
+        TextView problem = (TextView) findViewById(R.id.problem);
         random = (int) (Math.random()*12)+1;
         Cursor cursor = db.rawQuery("select * from izone1",null);
         cursor.moveToPosition(random);
-        TextView problem = (TextView) findViewById(R.id.problem);
         problem.setText(cursor.getString(1));
         answer = cursor.getPosition();
 
@@ -75,12 +78,7 @@ public class MainActivity extends AppCompatActivity {
                 ViewGroup.LayoutParams.MATCH_PARENT);
         parent_option.setLayoutParams(parent_layout);
 
-        /**
-        Cursor cu = db.rawQuery("select * from izone1",null);
-        cu.moveToFirst();
-        cu.moveToNext();
 
-         **/
         for(int i=0;i<4;i++){  // 문제 보기 중복 제거
             result[i] = (int)(Math.random()*12)+1;
             for (int j=0;j<i;j++){
@@ -164,6 +162,68 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
+     * 보기를 누르면 출력값이 변경됨
+     * 보기가 새로 만든거라서 다시 실행하면 보기가 계속생김 --> 그래서 삭제하고 다시 생성
+     * **/
+    public void reset_activity(){
+
+        Cursor cu123 = db.rawQuery("select * from izone1",null);
+        int fn = cu123.getCount();
+        if(fn-1 == number_of_correct_answers+wrong_count){  // 디비에 저장된 단어수에 따라 문제생성후 끝내기
+            Toast.makeText(getApplicationContext(), "정답횟수:"+number_of_correct_answers+"\n틀린횟수:"+wrong_count,Toast.LENGTH_SHORT).show();
+            finish();
+        }
+
+        Toast.makeText(getApplicationContext(), "정답횟수:"+number_of_correct_answers+"\n틀린횟수:"+wrong_count,Toast.LENGTH_SHORT).show();
+
+        parent_option.removeAllViews(); // 기존 보기 삭제
+
+
+        TextView problem = (TextView) findViewById(R.id.problem);
+        random = (int) (Math.random()*12)+1;
+        Cursor cursor = db.rawQuery("select * from izone1",null);
+        cursor.moveToPosition(random);
+        problem.setText(cursor.getString(1));
+        answer = cursor.getPosition();
+
+
+        for(int i=0;i<4;i++){  // 문제 보기 중복 제거
+            result[i] = (int)(Math.random()*12)+1;
+            for (int j=0;j<i;j++){
+                if(result[i] == result[j]){
+                    i--;
+                }
+            }
+        }
+
+        // 보기속에 정답 넣기 위한 반복
+        for(int i = 0; i<4; i++){
+            if (result[i] == random){
+                count += 1;
+            }
+        }
+        if(count==0){
+            result_arr_length = (int) (Math.random()*3);
+            result[result_arr_length] = random;
+        }
+
+        count = 0;       //count 0 으로 초기화 : 안하면 정답이 보기에서 없어짐
+
+        Cursor cu1 = db.rawQuery("select * from izone1",null);
+        Cursor cu2 = db.rawQuery("select * from izone1",null);
+        Cursor cu3 = db.rawQuery("select * from izone1",null);
+        Cursor cu4 = db.rawQuery("select * from izone1",null);
+        create_text_view(1, result[0], cu1);
+        create_text_view(2, result[1], cu2);
+        create_text_view(3, result[2], cu3);
+        create_text_view(4, result[3], cu4);
+
+    }
+
+
+
+
+    /**
      * 영어단어 작을 때도 유동적으로 하기 위해 그때 그때 TextView 생성
      *
      * **/
@@ -202,36 +262,52 @@ public class MainActivity extends AppCompatActivity {
                     case 1:
                         if (result[0] == answer){
                         Toast.makeText(getApplicationContext(),"정답",Toast.LENGTH_SHORT).show();
+                        number_of_correct_answers += 1;
+                        reset_activity();
                     }
                     else {
                         Toast.makeText(getApplicationContext(),"틀림",Toast.LENGTH_SHORT).show();
+                        wrong_count += 1;
+                        reset_activity();
                     }
                     break;
 
                 case 2:
                     if (result[1] == answer){
                         Toast.makeText(getApplicationContext(),"정답",Toast.LENGTH_SHORT).show();
+                        number_of_correct_answers += 1;
+                        reset_activity();
                     }
                     else {
                         Toast.makeText(getApplicationContext(),"틀림",Toast.LENGTH_SHORT).show();
+                        wrong_count += 1;
+                        reset_activity();
                     }
                     break;
 
                 case 3:
                     if (result[2] == answer){
                         Toast.makeText(getApplicationContext(),"정답",Toast.LENGTH_SHORT).show();
+                        number_of_correct_answers += 1;
+                        reset_activity();
                     }
                     else {
                         Toast.makeText(getApplicationContext(),"틀림",Toast.LENGTH_SHORT).show();
+                        wrong_count += 1;
+                        reset_activity();
                     }
                     break;
 
                 case 4:
                     if (result[3] == answer){
                         Toast.makeText(getApplicationContext(),"정답",Toast.LENGTH_SHORT).show();
+                        number_of_correct_answers += 1;
+                        reset_activity();
                     }
                     else {
                         Toast.makeText(getApplicationContext(),"틀림",Toast.LENGTH_SHORT).show();
+                        wrong_count += 1;
+                        reset_activity();
                     }
                     break;
 
