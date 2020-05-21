@@ -34,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     int answer; // 정답커서 위치
 
     int random;
+    int result_arr_length;
 
 
     @Override
@@ -60,16 +61,12 @@ public class MainActivity extends AppCompatActivity {
          **/
 
         // 영단어(문제) 출력해주는 곳
+        random = (int) (Math.random()*12)+1;
         Cursor cursor = db.rawQuery("select * from izone1",null);
-        cursor.moveToFirst();
-        cursor.moveToNext();
-        cursor.moveToNext();
-        cursor.moveToNext();
+        cursor.moveToPosition(random);
         TextView problem = (TextView) findViewById(R.id.problem);
         problem.setText(cursor.getString(1));
         answer = cursor.getPosition();
-
-
 
         parent_option = (LinearLayout) findViewById(R.id.parent_option);
         LinearLayout.LayoutParams parent_layout = new LinearLayout.LayoutParams(
@@ -83,14 +80,24 @@ public class MainActivity extends AppCompatActivity {
         cu.moveToNext();
 
          **/
+        for(int i=0;i<4;i++){
+            result[i] = (int)(Math.random()*12)+1;
+            for (int j=0;j<i;j++){
+                if(result[i] == result[j]){
+                    i--;
+                }
+            }
+        }
+        result_arr_length = (int) (Math.random()*3);
+        result[result_arr_length] = random;
         Cursor cu1 = db.rawQuery("select * from izone1",null);
         Cursor cu2 = db.rawQuery("select * from izone1",null);
         Cursor cu3 = db.rawQuery("select * from izone1",null);
         Cursor cu4 = db.rawQuery("select * from izone1",null);
-        create_text_view("아이즈원"+ (1), 1, cu1);
-        create_text_view("아이즈원"+ (2), 2, cu2);
-        create_text_view("아이즈원"+ (3), 3, cu3);
-        create_text_view("아이즈원"+ (4), 4, cu4);
+        create_text_view(1, result[0], cu1);
+        create_text_view(2, result[1], cu2);
+        create_text_view(3, result[2], cu3);
+        create_text_view(4, result[3], cu4);
 
 
 
@@ -152,7 +159,7 @@ public class MainActivity extends AppCompatActivity {
      * 영어단어 작을 때도 유동적으로 하기 위해 그때 그때 TextView 생성
      *
      * **/
-    public void create_text_view(String a, int i, Cursor cu){
+    public void create_text_view(int a, int i, Cursor cu){
         cu.moveToPosition(i);
         TextView view = new TextView(this);
         view.setText(cu.getString(1));
@@ -160,11 +167,10 @@ public class MainActivity extends AppCompatActivity {
         view.setTextColor(Color.BLACK);
         view.setBackgroundResource(R.drawable.border_radius);
         view.setGravity(Gravity.CENTER);
-        view.setTag(i);                    // 여기까지 TextView 설정(글자색, 폰트크기 등등)
+        view.setTag(a);                    // 여기까지 TextView 설정(글자색, 폰트크기 등등)
 
         view.setOnClickListener(problem_text);          // 각각의 TextView의 클릭 이벤트 설정
 
-        result[i-1] = cu.getPosition();
 
         LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
