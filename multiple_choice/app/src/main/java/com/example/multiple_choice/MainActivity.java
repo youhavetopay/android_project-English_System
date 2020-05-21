@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
 
     int random;
     int result_arr_length;
+    int count =0;
 
 
     @Override
@@ -80,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
         cu.moveToNext();
 
          **/
-        for(int i=0;i<4;i++){
+        for(int i=0;i<4;i++){  // 문제 보기 중복 제거
             result[i] = (int)(Math.random()*12)+1;
             for (int j=0;j<i;j++){
                 if(result[i] == result[j]){
@@ -88,8 +89,15 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
-        result_arr_length = (int) (Math.random()*3);
-        result[result_arr_length] = random;
+        for(int i = 0; i<4; i++){
+            if (result[i] == random){
+                count += 1;
+            }
+        }
+        if(count==0){
+            result_arr_length = (int) (Math.random()*3);
+            result[result_arr_length] = random;
+        }
         Cursor cu1 = db.rawQuery("select * from izone1",null);
         Cursor cu2 = db.rawQuery("select * from izone1",null);
         Cursor cu3 = db.rawQuery("select * from izone1",null);
