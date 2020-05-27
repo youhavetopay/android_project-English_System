@@ -26,4 +26,14 @@ public final class DbContract {
         public static final String WORD_MEAN5 = "mean5";
         public static final String WORDBOOK_ID = "wordbook_id";
     }
+
+    public static class DbEntry3{
+        public static final String TABLE_NAME = "english_test";
+        public static final String _ID = "_id";
+        public static final String WORD = "word_name";
+        public static final String PROBLEM_COUNT = "problem_count";
+        public static final String DATE = "date";
+        public static final String CORRECT_ANSWER = "correct_answer";
+        public static final String WORDBOOK_ID = "wordbook_id";
+    }
 }

@@ -166,6 +166,7 @@ public class Multiple_choice extends AppCompatActivity {
         Cursor cu123 = db.rawQuery("SELECT * FROM " + DbContract.DbEntry2.TABLE_NAME + " WHERE " + DbContract.DbEntry2.WORDBOOK_ID + "=" + WordbookId,null);
         int fn = cu123.getCount();
         if(fn == number_of_correct_answers+wrong_count){  // 디비에 저장된 단어수에 따라 문제생성후 끝내기
+
             Toast.makeText(getApplicationContext(), "정답횟수:"+number_of_correct_answers+"\n틀린횟수:"+wrong_count,Toast.LENGTH_SHORT).show();
             finish();
             Intent go_to_result = new Intent(getApplicationContext(), Problem_result_activity.class);

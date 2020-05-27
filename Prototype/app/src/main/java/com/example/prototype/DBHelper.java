@@ -13,19 +13,21 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final int DB_VERSION = 1;
     private static final String DB_NAME = "Wordbook1.db";
 
-    //단어장 디비
+    //단어장 디비 테이블
     private static final String SQL_CREATE_ENTRIES = String.format("CREATE TABLE %s (%s INTEGER PRIMARY KEY AUTOINCREMENT, %s TEXT, %s TEXT) ", DbContract.DbEntry.TABLE_NAME, DbContract.DbEntry._ID,
             DbContract.DbEntry.WORDBOOK_NAME_TITLE, DbContract.DbEntry.WORDBOOK_NAME_SUBTITLE);
     private static final String SQL_DELETE_ENTRIES = "DROP TABLE IF EXISTS " + DbContract.DbEntry.TABLE_NAME;
 
-    //단어 디비
+    //단어 디비 테이블
     private static final String SQL_CREATE_ENTRIES2 = String.format("CREATE TABLE %s (%s INTEGER PRIMARY KEY AUTOINCREMENT, %s TEXT, %s TEXT,  %s TEXT, %s TEXT, %s TEXT, %s TEXT, %s TEXT NOT NULL)",
             DbContract.DbEntry2.TABLE_NAME, DbContract.DbEntry2._ID, DbContract.DbEntry2.WORD_SPELL, DbContract.DbEntry2.WORD_MEAN1, DbContract.DbEntry2.WORD_MEAN2, DbContract.DbEntry2.WORD_MEAN3, DbContract.DbEntry2.WORD_MEAN4,
             DbContract.DbEntry2.WORD_MEAN5, DbContract.DbEntry2.WORDBOOK_ID);
     private static final String SQL_DELETE_ENTRIES2 = "DROP TABLE IF EXISTS " + DbContract.DbEntry2.TABLE_NAME;
 
-
-
+    // 문제 카운드 관련 디비 테이블
+    private static final String SQL_CREATE_ENTRIES3 = String.format("CREATE TABLE %s (%s INTEGER PRIMARY KEY AUTOINCREMENT, %s TEXT, %s INTEGER, %s DATE, %s INTEGER, %s TEXT NOT NULL",
+            DbContract.DbEntry3.TABLE_NAME, DbContract.DbEntry3._ID, DbContract.DbEntry3.WORD, DbContract.DbEntry3.PROBLEM_COUNT, DbContract.DbEntry3.DATE, DbContract.DbEntry3.CORRECT_ANSWER, DbContract.DbEntry3.WORDBOOK_ID);
+    private static final String SQL_DELETE_ENTRIES3 = "DROP TABLE IF EXISTS " + DbContract.DbEntry3.TABLE_NAME;
 
     public static DBHelper getInstance(Context context){
         if(sInstance == null){
@@ -43,12 +45,14 @@ public class DBHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(SQL_CREATE_ENTRIES);
         db.execSQL(SQL_CREATE_ENTRIES2);
+        db.execSQL(SQL_CREATE_ENTRIES3);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL(SQL_DELETE_ENTRIES);
         db.execSQL(SQL_DELETE_ENTRIES2);
+        db.execSQL(SQL_DELETE_ENTRIES3);
         onCreate(db);
     }
 }
