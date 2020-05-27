@@ -25,6 +25,8 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String SQL_DELETE_ENTRIES2 = "DROP TABLE IF EXISTS " + DbContract.DbEntry2.TABLE_NAME;
 
 
+
+
     public static DBHelper getInstance(Context context){
         if(sInstance == null){
             sInstance = new DBHelper(context);

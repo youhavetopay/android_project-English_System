@@ -9,7 +9,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Multiple_choice"></activity>
+        <activity android:name=".Problem_result_activity"></activity>
+        <activity android:name=".Multiple_choice" />
         <activity android:name=".add_word" />
         <activity android:name=".wordMain" />
         <activity android:name=".add_Wordbook_Activity" />
