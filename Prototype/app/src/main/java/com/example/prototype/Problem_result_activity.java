@@ -16,7 +16,7 @@ import android.widget.TextView;
 public class Problem_result_activity extends AppCompatActivity {
 
     TextView result1,result2;
-    Button save_number;
+
 
     private DBHelper databaseHelper;
     private SQLiteDatabase db;
@@ -56,6 +56,6 @@ public class Problem_result_activity extends AppCompatActivity {
         result2.setGravity(Gravity.CENTER);
         result2.setTextColor(Color.BLACK);
 
-        save_number = (Button) findViewById(R.id.button5);
+
     }
 }

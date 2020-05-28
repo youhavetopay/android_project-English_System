@@ -46,7 +46,8 @@ public class Multiple_choice extends AppCompatActivity {
     private long mWordbookId = -1;
     public static final int REQUEST_CODE_INSERT = 1001;
 
-
+    Cursor cursor;
+    int tempnumber;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,6 +60,7 @@ public class Multiple_choice extends AppCompatActivity {
         db = databaseHelper.getWritableDatabase();   // 쓰기 모드
 
 
+
         /**
          *
          * 문제 출력하는 곳
@@ -69,9 +71,9 @@ public class Multiple_choice extends AppCompatActivity {
         Intent intent = getIntent();
         final String WordbookId = Long.toString(intent.getLongExtra("wordbookId", -1));
         TextView problem = (TextView) findViewById(R.id.problem);
-        Cursor cursor = db.rawQuery("SELECT * FROM " + DbContract.DbEntry2.TABLE_NAME + " WHERE " + DbContract.DbEntry2.WORDBOOK_ID + "=" + WordbookId,null);
-
-        for(int i=0;i<cursor.getCount();i++){  // 문제 보기 중복 제거
+        cursor = db.rawQuery("SELECT * FROM " + DbContract.DbEntry2.TABLE_NAME + " WHERE " + DbContract.DbEntry2.WORDBOOK_ID + "=" + WordbookId+" AND "+ DbContract.DbEntry2.DATE +" = date('now')",null);
+        tempnumber = cursor.getCount();
+        for(int i=0;i<cursor.getCount();i++){  // 문제 중복제거
             answer_arr[i] = (int)(Math.random()*cursor.getCount());
 
             for (int j=0;j<i;j++){
@@ -164,16 +166,16 @@ public class Multiple_choice extends AppCompatActivity {
         Intent intent = getIntent();
         final String WordbookId = Long.toString(intent.getLongExtra("wordbookId", -1));
         String new_id = WordbookId;
-        Cursor cu123 = db.rawQuery("SELECT * FROM " + DbContract.DbEntry2.TABLE_NAME + " WHERE " + DbContract.DbEntry2.WORDBOOK_ID + "=" + WordbookId,null);
-        int fn = cu123.getCount();
-        Log.d(new_id,"응ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ");
-        if(fn == number_of_correct_answers+wrong_count){  // 디비에 저장된 단어수에 따라 문제생성후 끝내기
 
-            Toast.makeText(getApplicationContext(), "정답횟수:"+number_of_correct_answers+"\n틀린횟수:"+wrong_count,Toast.LENGTH_SHORT).show();
+
+        Log.d(new_id,"응ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ");
+        if(tempnumber == number_of_correct_answers+wrong_count){  // 디비에 저장된 단어수에 따라 문제생성후 끝내기
+
             Intent go_to_result = new Intent(getApplicationContext(), Problem_result_activity.class);
             go_to_result.putExtra("wordbookId",new_id);
             go_to_result.putExtra("answer_count",number_of_correct_answers);
             go_to_result.putExtra("wrong_count",wrong_count);
+            finish();
             startActivityForResult(go_to_result,REQUEST_CODE_INSERT);
         }
 
@@ -233,13 +235,14 @@ public class Multiple_choice extends AppCompatActivity {
                 case 1:
                     if (result[0] == random){
                         //Toast.makeText(getApplicationContext(),"정답",Toast.LENGTH_SHORT).show();
-                        //Cursor cursor1 = db.rawQuery("select * from")
                         number_of_correct_answers += 1;
+                        save_problem_count(random, true);
                         reset_activity();
                     }
                     else {
                         //Toast.makeText(getApplicationContext(),"틀림",Toast.LENGTH_SHORT).show();
                         wrong_count += 1;
+                        save_problem_count(random, false);
                         reset_activity();
                     }
                     break;
@@ -248,11 +251,13 @@ public class Multiple_choice extends AppCompatActivity {
                     if (result[1] == random){
                         //Toast.makeText(getApplicationContext(),"정답",Toast.LENGTH_SHORT).show();
                         number_of_correct_answers += 1;
+                        save_problem_count(random, true);
                         reset_activity();
                     }
                     else {
                         //Toast.makeText(getApplicationContext(),"틀림",Toast.LENGTH_SHORT).show();
                         wrong_count += 1;
+                        save_problem_count(random, false);
                         reset_activity();
                     }
                     break;
@@ -261,11 +266,13 @@ public class Multiple_choice extends AppCompatActivity {
                     if (result[2] == random){
                         //Toast.makeText(getApplicationContext(),"정답",Toast.LENGTH_SHORT).show();
                         number_of_correct_answers += 1;
+                        save_problem_count(random, true);
                         reset_activity();
                     }
                     else {
                         //Toast.makeText(getApplicationContext(),"틀림",Toast.LENGTH_SHORT).show();
                         wrong_count += 1;
+                        save_problem_count(random, false);
                         reset_activity();
                     }
                     break;
@@ -274,11 +281,13 @@ public class Multiple_choice extends AppCompatActivity {
                     if (result[3] == random){
                         //Toast.makeText(getApplicationContext(),"정답",Toast.LENGTH_SHORT).show();
                         number_of_correct_answers += 1;
+                        save_problem_count(random, true);
                         reset_activity();
                     }
                     else {
                         //Toast.makeText(getApplicationContext(),"틀림",Toast.LENGTH_SHORT).show();
                         wrong_count += 1;
+                        save_problem_count(random, false);
                         reset_activity();
                     }
                     break;
@@ -298,8 +307,126 @@ public class Multiple_choice extends AppCompatActivity {
                 Toast.LENGTH_SHORT).show();
         super.onBackPressed();
     }
-    public void save_problem_count(int random){
 
+
+
+
+    public void save_problem_count(int random, boolean i){
+        databaseHelper = new DBHelper(this);
+        db = databaseHelper.getWritableDatabase();   // 쓰기 모드
+
+        Intent intent = getIntent();
+        final String WordbookId = Long.toString(intent.getLongExtra("wordbookId", -1));
+
+        Cursor cursor1 = db.rawQuery("select "+ DbContract.DbEntry2.WORD_SPELL+ " from "+ DbContract.DbEntry2.TABLE_NAME + " where "+ DbContract.DbEntry2.WORDBOOK_ID + " = "+WordbookId,null);
+        cursor1.moveToPosition(random);
+        String answer_word = cursor1.getString(0);  //정답 단어 가져오기
+
+        Cursor cursor2 = db.rawQuery("select "+ DbContract.DbEntry2.CORRECT_ANSWER+" from "+ DbContract.DbEntry2.TABLE_NAME +" where "+ DbContract.DbEntry2.WORD_SPELL +" = '"+answer_word+"'",null);
+        cursor2.moveToFirst();
+
+        if(i){   //정답일 때  correct_answer + 1
+
+            switch (cursor2.getInt(0)){
+                case 0:
+                    /**
+                     * 0일땐 correct_answer 증가
+                     * 2일 뒤 문제 나오게 date 설정
+                     * **/
+                    db.execSQL("update "+ DbContract.DbEntry2.TABLE_NAME +" set "+ DbContract.DbEntry2.DATE +"= date('now','+2 days'), "+ DbContract.DbEntry2.CORRECT_ANSWER+ " = "+DbContract.DbEntry2.CORRECT_ANSWER+"+ 1"+
+                            " where "+ DbContract.DbEntry2.WORD_SPELL+ " = '"+answer_word+"'");
+                    break;
+
+                case 1:
+                    /**
+                     * 1 일땐 correct_answer 증가
+                     * 3일 뒤 문제 나오게  date설정
+                     * **/
+                    db.execSQL("update "+ DbContract.DbEntry2.TABLE_NAME +" set "+ DbContract.DbEntry2.DATE +"= date('now','+3 days'), "+ DbContract.DbEntry2.CORRECT_ANSWER+ " = "+DbContract.DbEntry2.CORRECT_ANSWER+"+ 1"+
+                            " where "+ DbContract.DbEntry2.WORD_SPELL+ " = '"+answer_word+"'");
+                    break;
+
+                case 2:
+                    /**
+                     * 2 일땐 correct_answer 증가
+                     * 4일 뒤 문제 나오게  date설정
+                     * **/
+                    db.execSQL("update "+ DbContract.DbEntry2.TABLE_NAME +" set "+ DbContract.DbEntry2.DATE +"= date('now','+4 days'), "+ DbContract.DbEntry2.CORRECT_ANSWER+ " = "+DbContract.DbEntry2.CORRECT_ANSWER+"+ 1"+
+                            " where "+ DbContract.DbEntry2.WORD_SPELL+ " = '"+answer_word+"'");
+                    break;
+
+                case 3:
+                    /**
+                     * 3 일땐 correct_answer 증가
+                     * 8일 뒤 문제 나오게  date설정
+                     * **/
+                    db.execSQL("update "+ DbContract.DbEntry2.TABLE_NAME +" set "+ DbContract.DbEntry2.DATE +"= date('now','+8 days'), "+ DbContract.DbEntry2.CORRECT_ANSWER+ " = "+DbContract.DbEntry2.CORRECT_ANSWER+"+ 1"+
+                            " where "+ DbContract.DbEntry2.WORD_SPELL+ " = '"+answer_word+"'");
+                    break;
+
+                case 4:
+                    /**
+                     * 4 일땐 correct_answer 1증가
+                     * date null 로 설정
+                     * **/
+                    db.execSQL("update "+ DbContract.DbEntry2.TABLE_NAME +" set "+ DbContract.DbEntry2.DATE +"= null, "+ DbContract.DbEntry2.CORRECT_ANSWER+ " = "+DbContract.DbEntry2.CORRECT_ANSWER+"+ 1"+
+                            " where "+ DbContract.DbEntry2.WORD_SPELL+ " = '"+answer_word+"'");
+                    break;
+
+                default:
+                    break;
+            }
+        }
+        else{  //틀렸을 때 correct_answer -1
+            switch (cursor2.getInt(0)){
+                case 0:
+                    /**
+                     * 0일땐
+                     * 1일 뒤 문제 나오게 date 설정
+                     * **/
+                    db.execSQL("update "+ DbContract.DbEntry2.TABLE_NAME +" set "+ DbContract.DbEntry2.DATE +" = date('now','+1 days') where "+ DbContract.DbEntry2.WORD_SPELL+ " = '"+answer_word+"'");
+                    break;
+
+                case 1:
+                    /**
+                     * 1 일땐 correct_answer 감소
+                     * 2일 뒤 문제 나오게  date설정
+                     * **/
+                    db.execSQL("update "+ DbContract.DbEntry2.TABLE_NAME +" set "+ DbContract.DbEntry2.DATE +" = date('now','+2 days'), "+ DbContract.DbEntry2.CORRECT_ANSWER+ " = "+DbContract.DbEntry2.CORRECT_ANSWER+"- 1"+
+                            " where "+ DbContract.DbEntry2.WORD_SPELL+ " = '"+answer_word+"'");
+                    break;
+
+                case 2:
+                    /**
+                     * 2 일땐 correct_answer 감소
+                     * 3일 뒤 문제 나오게  date설정
+                     * **/
+                    db.execSQL("update "+ DbContract.DbEntry2.TABLE_NAME +" set "+ DbContract.DbEntry2.DATE +" = date('now','+3 days'), "+ DbContract.DbEntry2.CORRECT_ANSWER+ " = "+DbContract.DbEntry2.CORRECT_ANSWER+"- 1"+
+                            " where "+ DbContract.DbEntry2.WORD_SPELL+ " = '"+answer_word+"'");
+                    break;
+
+                case 3:
+                    /**
+                     * 3 일땐 correct_answer 감소
+                     * 4일 뒤 문제 나오게  date설정
+                     * **/
+                    db.execSQL("update "+ DbContract.DbEntry2.TABLE_NAME +" set "+ DbContract.DbEntry2.DATE +" = date('now','+4 days'), "+ DbContract.DbEntry2.CORRECT_ANSWER+ " = "+DbContract.DbEntry2.CORRECT_ANSWER+"- 1"+
+                            " where "+ DbContract.DbEntry2.WORD_SPELL+ " = '"+answer_word+"'");
+                    break;
+
+                case 4:
+                    /**
+                     * 4 일땐 correct_answer 1 감소
+                     * 8일 뒤 문제 나오게 date 설정
+                     * **/
+                    db.execSQL("update "+ DbContract.DbEntry2.TABLE_NAME +" set "+ DbContract.DbEntry2.DATE +" = date('now','+8 days'), "+ DbContract.DbEntry2.CORRECT_ANSWER+ " = "+DbContract.DbEntry2.CORRECT_ANSWER+"- 1"+
+                            " where "+ DbContract.DbEntry2.WORD_SPELL+ " = '"+answer_word+"'");
+                    break;
+
+                default:
+                    break;
+            }
+        }
 
 
     }
