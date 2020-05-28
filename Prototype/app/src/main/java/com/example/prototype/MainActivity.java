@@ -130,26 +130,26 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Intent intent = new Intent(MainActivity.this, add_Wordbook_Activity.class);
-                        String title = "";
-                        String subtitle = "";
+                String title = "";
+                String subtitle = "";
 
-                        SQLiteDatabase db = DBHelper.getInstance(MainActivity.this).getReadableDatabase();
-                        Cursor cursor1 = db.rawQuery("SELECT * FROM " + DbContract.DbEntry.TABLE_NAME + " WHERE " + DbContract.DbEntry._ID + "=" + deletedId, null);
-                        while(cursor1.moveToNext()){
-                            int colid = cursor1.getColumnIndex(DbContract.DbEntry.WORDBOOK_NAME_TITLE);
-                            int colid2 = cursor1.getColumnIndex(DbContract.DbEntry.WORDBOOK_NAME_SUBTITLE);
-                            title = cursor1.getString(colid);
-                            subtitle = cursor1.getString(colid2);
-                        }
+                SQLiteDatabase db = DBHelper.getInstance(MainActivity.this).getReadableDatabase();
+                Cursor cursor1 = db.rawQuery("SELECT * FROM " + DbContract.DbEntry.TABLE_NAME + " WHERE " + DbContract.DbEntry._ID + "=" + deletedId, null);
+                while(cursor1.moveToNext()){
+                    int colid = cursor1.getColumnIndex(DbContract.DbEntry.WORDBOOK_NAME_TITLE);
+                    int colid2 = cursor1.getColumnIndex(DbContract.DbEntry.WORDBOOK_NAME_SUBTITLE);
+                    title = cursor1.getString(colid);
+                    subtitle = cursor1.getString(colid2);
+                }
 
-                        intent.putExtra("id", deletedId);
-                        intent.putExtra("title", title);
-                        intent.putExtra("subtitle", subtitle);
+                intent.putExtra("id", deletedId);
+                intent.putExtra("title", title);
+                intent.putExtra("subtitle", subtitle);
 
-                        startActivityForResult(intent, REQUEST_CODE_INSERT);
-                    }
-                });
-                builder.show();
+                startActivityForResult(intent, REQUEST_CODE_INSERT);
+            }
+        });
+        builder.show();
                 return true;
             }
         });

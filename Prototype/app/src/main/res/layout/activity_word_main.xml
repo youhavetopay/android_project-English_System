@@ -79,12 +79,13 @@
             android:id="@+id/fab_solve_problems"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_search_black_24dp"
+            android:src="@drawable/ic_create_black_24dp"
             app:fab_colorNormal="#ffffff"
             app:fab_colorPressed="#99d4d4d4"
             app:fab_colorRipple="#66efecec"
             app:fab_label="문제풀기"
-            app:fab_size="mini"/>
+            app:fab_size="mini"
+            />
 
 
 

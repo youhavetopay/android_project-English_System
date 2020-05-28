@@ -29,6 +29,7 @@
         android:textStyle="bold" />
 
     <TextView
+        android:id="@+id/problem_count"
         android:layout_width="281dp"
         android:layout_height="60dp"
         android:layout_gravity="center_horizontal"

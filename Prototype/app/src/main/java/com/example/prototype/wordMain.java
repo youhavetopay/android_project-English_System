@@ -43,10 +43,16 @@ public class wordMain extends AppCompatActivity {
 
     private ListAdapter wAdapter;
 
+    private DBHelper databaseHelper;
+    private SQLiteDatabase db;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_word_main);
+        databaseHelper = new DBHelper(this);
+
+        db = databaseHelper.getWritableDatabase();   // 쓰기 모드
 
         //==========================================//
         //tts정의 부분
@@ -117,9 +123,11 @@ public class wordMain extends AppCompatActivity {
         fab_solve_problems.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                db.execSQL("update wordbook set problem_count = problem_count + 1 where _id = "+mWordbookId);
                 Intent go_to_problems = new Intent(getApplicationContext(), Multiple_choice.class);
                 go_to_problems.putExtra("wordbookId",mWordbookId);
                 startActivityForResult(go_to_problems,REQUEST_CODE_INSERT);
+
 
             }
         });

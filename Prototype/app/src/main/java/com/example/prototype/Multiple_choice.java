@@ -14,6 +14,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -162,15 +163,15 @@ public class Multiple_choice extends AppCompatActivity {
     public void reset_activity(){
         Intent intent = getIntent();
         final String WordbookId = Long.toString(intent.getLongExtra("wordbookId", -1));
-
+        String new_id = WordbookId;
         Cursor cu123 = db.rawQuery("SELECT * FROM " + DbContract.DbEntry2.TABLE_NAME + " WHERE " + DbContract.DbEntry2.WORDBOOK_ID + "=" + WordbookId,null);
         int fn = cu123.getCount();
+        Log.d(new_id,"응ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ");
         if(fn == number_of_correct_answers+wrong_count){  // 디비에 저장된 단어수에 따라 문제생성후 끝내기
 
             Toast.makeText(getApplicationContext(), "정답횟수:"+number_of_correct_answers+"\n틀린횟수:"+wrong_count,Toast.LENGTH_SHORT).show();
-            finish();
             Intent go_to_result = new Intent(getApplicationContext(), Problem_result_activity.class);
-            go_to_result.putExtra("wordbookId",mWordbookId);
+            go_to_result.putExtra("wordbookId",new_id);
             go_to_result.putExtra("answer_count",number_of_correct_answers);
             go_to_result.putExtra("wrong_count",wrong_count);
             startActivityForResult(go_to_result,REQUEST_CODE_INSERT);
@@ -232,6 +233,7 @@ public class Multiple_choice extends AppCompatActivity {
                 case 1:
                     if (result[0] == random){
                         //Toast.makeText(getApplicationContext(),"정답",Toast.LENGTH_SHORT).show();
+                        //Cursor cursor1 = db.rawQuery("select * from")
                         number_of_correct_answers += 1;
                         reset_activity();
                     }
@@ -295,6 +297,11 @@ public class Multiple_choice extends AppCompatActivity {
                 "뒤로가기 버튼을 눌러 \n결과를 저장하지 않고 돌아갑니다.",
                 Toast.LENGTH_SHORT).show();
         super.onBackPressed();
+    }
+    public void save_problem_count(int random){
+
+
+
     }
 }
 
