@@ -46,6 +46,8 @@ public class wordMain extends AppCompatActivity {
     private DBHelper databaseHelper;
     private SQLiteDatabase db;
 
+    Cursor check_cur1,check_cur2;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -123,10 +125,27 @@ public class wordMain extends AppCompatActivity {
         fab_solve_problems.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                db.execSQL("update wordbook set problem_count = problem_count + 1 where _id = "+mWordbookId);
-                Intent go_to_problems = new Intent(getApplicationContext(), Multiple_choice.class);
-                go_to_problems.putExtra("wordbookId",mWordbookId);
-                startActivityForResult(go_to_problems,REQUEST_CODE_INSERT);
+                check_cur1 = db.rawQuery("select * from "+DbContract.DbEntry2.TABLE_NAME+" WHERE " + DbContract.DbEntry2.WORDBOOK_ID + "=" + mWordbookId+" AND "+ DbContract.DbEntry2.DATE +" = date('now')",null);
+                check_cur2 = db.rawQuery("select "+ DbContract.DbEntry2.DATE+" from "+DbContract.DbEntry2.TABLE_NAME+" where "+ DbContract.DbEntry2.DATE +" < date('now')",null);
+                if (check_cur1.getCount() == 0){
+                    if (check_cur2.getCount() == 0){
+                        //(정상적) 오늘 풀 문제가 없는 경우
+                        Toast.makeText(getApplicationContext(),
+                                "풀 문제 없음",Toast.LENGTH_SHORT).show();
+                    }
+                    else { //(비정상)문제 풀 시간이 지나 문제가 밀린 경우
+                        Toast.makeText(getApplicationContext(),
+                                "문제가 밀림",Toast.LENGTH_SHORT).show();
+
+                    }
+                }
+                else { // 풀 문제가 있을때
+                    db.execSQL("update wordbook set problem_count = problem_count + 1 where _id = "+mWordbookId);
+                    Intent go_to_problems = new Intent(getApplicationContext(), Multiple_choice.class);
+                    go_to_problems.putExtra("wordbookId",mWordbookId);
+                    startActivityForResult(go_to_problems,REQUEST_CODE_INSERT);
+                }
+
 
 
             }
